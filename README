@@ -1,0 +1,45 @@
+# Name: Joel Koehler
+# Class: CS354
+# Project: iX - adding built in functions to the interpreter
+
+
+# Discussion:
+The biggest struggle I had with this assignment was 
+actually understanding the given code. I wrote my i4
+with the map in the enviroment storing a funcMap for
+each function key, but the given code used Function 
+objects. 
+
+At first I tried to make a new node for each 
+of the six required math functions that would replace 
+a function call if a keyword was used. This didn't work
+of course because I didn't have access to the enviroment.
+
+Next I tried to create a new node for each of the math functions
+and manaully insert them into the enviroment as the expr for 
+Function objects. The plan was to use the eval the nodes in each
+node (eg. math.sin(fact)) but this also didn't work because I didn't
+have access to the fact when I created the node manually. This did 
+however lead me to the solution; I realized where the functions where
+actually being evaluated. I saw call() function in the Function class 
+(again, I made i4 without this so I didn't even think about this at first)
+and realized that I had access to the argument there. 
+
+So here is what I did:
+    1. I made empty nodes for each math function in pl_node.py
+    2. I made new call() funcitons in pl_function.py to compute using the passed 
+       argument 
+    3. I changed NodeFuncCall's eval to call these new call() functions
+       instead when the id of the function call was one of the six math functions
+    4. I manually created and stored function objects in the enviroment. Here is
+       an example of how that was done:
+
+       sinN = NodeSin()
+       sinF = Function('meaningless', sinN)
+       self.putFunc("sin", sinF)
+
+
+# Testing:
+From my testing this solution works perfectly. Log and Ln return the same
+value (and use the same math.log() function for computation) but it was
+stated that this is expected when not defining the base.
